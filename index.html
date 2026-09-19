@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EscapeTartu Story Generator</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/story.css">
+
+</head>
+<body>
+
+<div id="app">
+
+    <!-- =====================
+         Sidebar
+    ===================== -->
+    <aside id="sidebar">
+
+        <h1>EscapeTartu <span>Story Generator</span></h1>
+
+        <!-- Mode toggle -->
+        <section class="panel">
+            <h2>Režiim</h2>
+            <div class="mode-toggle">
+                <button id="btn-weekday" class="active">E – R</button>
+                <button id="btn-weekend">L – P</button>
+            </div>
+        </section>
+
+        <!-- Date -->
+        <section class="panel">
+            <h2>Kuupäev</h2>
+            <label>Päev
+                <input id="day-input" type="text">
+            </label>
+            <label>Kuupäev
+                <input id="date-input" type="text">
+            </label>
+        </section>
+
+        <!-- Slots -->
+        <section class="panel">
+            <h2>Lasertagi ajad</h2>
+            <div id="slot-editor"></div>
+        </section>
+
+        <!-- Weekend indicators — visible in weekday mode -->
+        <section class="panel" id="panel-weekend">
+            <h2>Nädalavahetus</h2>
+            <div class="select-row">
+                <span>Laupäev</span>
+                <select id="saturday-select">
+                    <option value="LOW">Palju vabu</option>
+                    <option value="MEDIUM">Pool täis</option>
+                    <option value="HIGH">Täitumas</option>
+                </select>
+            </div>
+            <div class="select-row">
+                <span>Pühapäev</span>
+                <select id="sunday-select">
+                    <option value="LOW">Palju vabu</option>
+                    <option value="MEDIUM">Pool täis</option>
+                    <option value="HIGH">Täitumas</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Next week indicator — visible in weekend mode -->
+        <section class="panel" id="panel-nextweek" style="display:none">
+            <h2>Järgmine nädal</h2>
+            <div class="select-row">
+                <span>Täituvus</span>
+                <select id="nextweek-select">
+                    <option value="LOW">Palju vabu</option>
+                    <option value="MEDIUM">Pool täis</option>
+                    <option value="HIGH">Täitumas</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Background -->
+        <section class="panel">
+            <h2>Taustatpilt</h2>
+            <label>Lae üles pilt
+                <input id="background-upload" type="file" accept="image/*">
+            </label>
+        </section>
+
+        <!-- Export -->
+        <section class="panel">
+            <button id="export-btn">Laadi alla PNG</button>
+        </section>
+
+    </aside>
+
+    <!-- Draggable divider -->
+    <div id="divider"></div>
+
+    <!-- =====================
+         Preview
+    ===================== -->
+    <main id="preview">
+
+        <div id="story">
+
+            <div id="overlay"></div>
+
+            <header>
+                <img id="logo" src="assets/logo.png" alt="EscapeTartu">
+                <div id="title">LASERTAG</div>
+                <div id="subtitle">VABAD AJAD</div>
+            </header>
+
+            <section id="story-date">
+                <div id="story-day">Neljapäev</div>
+                <div id="story-date-value">3. juuli</div>
+            </section>
+
+            <section id="slots"></section>
+
+            <!-- Weekday mode: two weekend indicators -->
+            <section id="weekend">
+                <h2>NÄDALAVAHETUS</h2>
+                <div id="weekend-content"></div>
+            </section>
+
+            <!-- Weekend mode: single next-week indicator -->
+            <section id="next-week" style="display:none">
+                <h2>JÄRGMINE NÄDAL</h2>
+                <div id="next-week-content"></div>
+            </section>
+
+            <footer>
+                <div>BRONEERI</div>
+                <div>ESCAPETARTU.EE</div>
+            </footer>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script type="module" src="js/app.js"></script>
+
+<script>
+    const divider = document.getElementById('divider');
+    const sidebar = document.getElementById('sidebar');
+    let dragging  = false;
+
+    divider.addEventListener('mousedown', () => {
+        dragging = true;
+        divider.classList.add('dragging');
+        document.body.style.cursor     = 'col-resize';
+        document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', e => {
+        if (!dragging) return;
+        const newWidth = Math.min(Math.max(e.clientX, 180), 600);
+        sidebar.style.width    = newWidth + 'px';
+        sidebar.style.minWidth = newWidth + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (!dragging) return;
+        dragging = false;
+        divider.classList.remove('dragging');
+        document.body.style.cursor     = '';
+        document.body.style.userSelect = '';
+    });
+</script>
+
+</body>
+</html>

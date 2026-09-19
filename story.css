@@ -1,0 +1,436 @@
+/* ==========================================================
+   STORY.CSS
+   Story Preview
+========================================================== */
+
+#preview{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+    overflow:auto;
+    background:#1d1d1d;
+}
+
+#story{
+
+    position:relative;
+
+    width:405px;
+    height:720px;
+
+    aspect-ratio:9/16;
+
+    overflow:hidden;
+
+    border-radius:20px;
+
+    background-image: url('../assets/background.png');
+    background-size:cover;
+    background-position:center;
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.45);
+
+    display: flex;
+    flex-direction: column;
+
+}
+
+/* =======================
+   Dark overlay
+======================= */
+
+#overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+        linear-gradient(
+            rgba(0,0,0,.45),
+            rgba(0,0,0,.55)
+        );
+
+    pointer-events:none;
+
+}
+
+/* =======================
+   Header
+======================= */
+
+header{
+
+    position:relative;
+
+    z-index:2;
+
+    display:flex;
+    flex-direction:column;
+
+    padding:0px 34px;
+
+}
+
+#logo{
+
+    font-family:"Oswald";
+
+    color:#F0E000;
+
+    font-size:18px;
+
+    letter-spacing:2px;
+
+    padding-top: 10px;
+
+}
+
+#title{
+
+    font-family:"Barlow Condensed";
+
+    font-size:58px;
+
+    font-weight:700;
+
+    color:white;
+
+    line-height:1;
+
+}
+
+#subtitle{
+
+    font-family:"Inter";
+
+    margin-top:4px;
+
+    font-size:16px;
+
+    letter-spacing:2px;
+
+    color:#d8d8d8;
+
+}
+
+/* =======================
+   Date
+======================= */
+
+#story-date{
+
+    position:relative;
+
+    z-index:2;
+
+    padding:0 34px;
+
+    margin-top:10px;
+
+}
+
+#story-day{
+
+    font-size:34px;
+
+    font-family:"Barlow Condensed";
+
+    color:white;
+
+    font-weight:700;
+
+}
+
+#story-date-value{
+
+    color:#F0E000;
+
+    margin-top:2px;
+
+    font-size:18px;
+
+    font-family:"Inter";
+
+}
+
+/* =======================
+   Slots
+======================= */
+
+#slots{
+
+    position:relative;
+
+    z-index:2;
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:12px;
+
+    padding:12px 34px;
+
+}
+
+.slot{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:12px 14px;
+
+    border-radius:10px;
+
+    backdrop-filter:blur(5px);
+
+    background:rgba(0,0,0,.55);
+
+    border:2px solid #2f2f36;
+
+}
+
+.slot.free{
+
+    border-color:#00ff7a;
+
+}
+
+.slot.booked{
+
+    border-color:#ff3050;
+
+    opacity:.65;
+
+}
+
+.slot-time{
+
+    font-family:"Barlow Condensed";
+
+    font-size:24px;
+
+    color:white;
+
+    font-weight:700;
+
+}
+
+.slot-status{
+
+    font-size:13px;
+
+    font-family:"Inter";
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+}
+
+.slot.free .slot-status{
+
+    color:#00ff7a;
+
+}
+
+.slot.booked .slot-status{
+
+    color:#ff3050;
+
+}
+
+/* =======================
+   Weekend
+======================= */
+
+#weekend{
+
+    position:relative;
+
+    z-index:2;
+
+    margin:10px 34px 0;
+
+    padding:18px;
+
+    border-radius:14px;
+
+    background:rgba(15,15,15,.75);
+
+    border:2px solid rgba(255,152,0,.5);
+
+}
+
+#weekend h2{
+
+    margin:0 0 16px 0;
+
+    font-family:"Barlow Condensed";
+
+    color:#FF9800;
+
+    font-size:26px;
+
+    letter-spacing:2px;
+
+}
+
+.weekend-day{
+
+    margin-bottom:18px;
+
+}
+
+.weekend-day:last-child{
+
+    margin-bottom:0;
+
+}
+
+.weekend-title{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    color:white;
+
+    font-weight:600;
+
+    margin-bottom:8px;
+
+}
+
+.availability-bar{
+
+    width:100%;
+
+    height:8px;
+
+    border-radius:99px;
+
+    background:#303030;
+
+    overflow:hidden;
+
+}
+
+.availability-fill{
+
+    height:100%;
+
+    background:#FF9800;
+
+    border-radius:99px;
+
+}
+
+.availability-text{
+
+    margin-top:6px;
+
+    color:#d5d5d5;
+
+    font-size:13px;
+
+}
+
+/* =======================
+   Järgmine nädal
+   (weekend mode — matches #weekend styling exactly)
+======================= */
+
+#next-week {
+
+    position: relative;
+
+    z-index: 2;
+
+    margin: 10px 34px 0;
+
+    padding: 18px;
+
+    border-radius: 14px;
+
+    background: rgba(15,15,15,.75);
+
+    border: 2px solid rgba(255,152,0,.5);
+
+}
+
+#next-week h2 {
+
+    margin: 0 0 6px 0;
+
+    font-family: "Barlow Condensed";
+
+    color: #FF9800;
+
+    font-size: 26px;
+
+    letter-spacing: 2px;
+
+}
+
+/* =======================
+   Footer
+======================= */
+
+footer {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+footer div:first-child{
+
+    color:white;
+
+    font-family:"Barlow Condensed";
+
+    font-size:28px;
+
+}
+
+footer div:last-child{
+
+    color:#F0E000;
+
+    font-family:"Inter";
+
+    margin-top:4px;
+
+    letter-spacing:2px;
+
+}
+
+
+/* =======================
+   Weekend level colours
+======================= */
+
+.weekend-day[data-level="low"]    .availability-fill { background: #00FF7A; }
+.weekend-day[data-level="medium"] .availability-fill { background: #FF9800; }
+.weekend-day[data-level="high"]   .availability-fill { background: #FF3050; }
+
+.weekend-day[data-level="low"]    .weekend-level-label { color: #00FF7A; }
+.weekend-day[data-level="medium"] .weekend-level-label { color: #FF9800; }
+.weekend-day[data-level="high"]   .weekend-level-label { color: #FF3050; }
+
+/* Slot status colours */
+.slot[data-status="limited"]  { border-color: #FF9800; }
+.slot[data-status="reserved"] { border-color: #888; opacity: 0.7; }
+.slot[data-status="limited"]  .slot-status { color: #FF9800; }
+.slot[data-status="reserved"] .slot-status { color: #aaa; }

@@ -1,0 +1,389 @@
+/* ==========================================================
+   STYLE.CSS
+   App shell — sidebar, layout, controls
+========================================================== */
+
+/* ---------- Reset ---------- */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ---------- Root variables ---------- */
+
+:root {
+    --bg:          #0D0D10;
+    --surface:     #13131A;
+    --surface2:    #1A1A24;
+    --border:      #2A2A38;
+    --border-hi:   #3A3A50;
+    --text:        #E8E8F0;
+    --text-muted:  #55556A;
+    --text-dim:    #2E2E3A;
+    --yellow:      #F0E000;
+    --green:       #00FF7A;
+    --red:         #FF3050;
+    --amber:       #FF9800;
+}
+
+/* ---------- Body ---------- */
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+}
+
+/* ---------- App layout ---------- */
+
+#app {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* ---------- Draggable divider between sidebar and preview ---------- */
+
+#divider {
+    width: 5px;
+    background: #1E1E28;
+    cursor: col-resize;
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+
+#divider:hover,
+#divider.dragging {
+    background: #F0E000;
+}
+
+/* ==========================================================
+   SIDEBAR
+========================================================== */
+
+#sidebar {
+    width: 300px;
+    min-width: 300px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-bottom: 24px;
+    flex-shrink: 0;
+}
+
+#sidebar::-webkit-scrollbar { width: 3px; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* App title */
+
+#sidebar h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: var(--yellow);
+    text-shadow: 0 0 16px rgba(240,224,0,0.35);
+    padding: 18px 20px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+#sidebar h1 span {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-top: 3px;
+}
+
+/* Section panels */
+
+.panel {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.panel h2 {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+}
+
+/* Labels + inputs */
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+input[type="text"],
+input[type="file"],
+select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 7px 10px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+}
+
+input[type="text"]:focus,
+select:focus {
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 2px rgba(240,224,0,0.07);
+}
+
+select {
+    appearance: none;
+    cursor: pointer;
+}
+
+input[type="file"] {
+    font-size: 11px;
+    padding: 6px 8px;
+    cursor: pointer;
+}
+
+/* ---------- Slot editor rows ---------- */
+
+.slot-editor-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 10px;
+}
+
+.slot-editor-row.is-booked {
+    opacity: 0.45;
+}
+
+.slot-index {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-dim);
+    width: 14px;
+    flex-shrink: 0;
+}
+
+.slot-time-input {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-family: 'Barlow Condensed', sans-serif !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    padding: 0 !important;
+    flex: 1;
+    color: var(--text) !important;
+}
+
+.slot-status-select {
+    width: 130px !important;
+    font-size: 11px !important;
+    padding: 4px 6px !important;
+    flex-shrink: 0;
+}
+
+/* colour-coded status selects */
+.slot-status-select.s-FREE     { border-color: rgba(0,255,122,0.45); color: var(--green); }
+.slot-status-select.s-LIMITED  { border-color: rgba(255,152,0,0.45); color: var(--amber); }
+.slot-status-select.s-RESERVED { border-color: rgba(255,255,255,0.2); color: #aaa; }
+.slot-status-select.s-FULL     { border-color: rgba(255,48,80,0.5);  color: var(--red); }
+
+/* ---------- Weekend selects ---------- */
+
+.select-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.select-row span {
+    font-size: 11px;
+    color: var(--text-muted);
+    flex: 1;
+}
+
+.select-row select {
+    width: 130px;
+    font-size: 11px;
+    padding: 5px 8px;
+}
+
+.select-row select.s-LOW    { border-color: rgba(0,255,122,0.4);  color: var(--green); }
+.select-row select.s-MEDIUM { border-color: rgba(255,152,0,0.4);  color: var(--amber); }
+.select-row select.s-HIGH   { border-color: rgba(255,48,80,0.45); color: var(--red);   }
+
+/* ---------- Export button ---------- */
+
+#export-btn {
+    width: 100%;
+    padding: 11px;
+    background: var(--yellow);
+    color: #0A0A00;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(240,224,0,0.2);
+    transition: background 0.15s, box-shadow 0.15s;
+}
+
+#export-btn:hover {
+    background: #fff;
+    box-shadow: 0 0 28px rgba(240,224,0,0.35);
+}
+
+#export-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ---------- Preview area ---------- */
+
+#preview {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background: #111115;
+    overflow: scroll;
+    padding: 60px;
+}
+
+/* ---------- Mode toggle ---------- */
+
+.mode-toggle {
+    display: flex;
+    gap: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.mode-toggle button {
+    flex: 1;
+    padding: 7px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.mode-toggle button.active {
+    background: var(--yellow);
+    color: #0A0A00;
+}
+
+/* ---------- Slot VABA/TÄIS toggle button ---------- */
+
+.slot-toggle {
+    flex-shrink: 0;
+    width: 72px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+}
+
+.slot-toggle.is-free {
+    background: rgba(0, 255, 122, 0.08);
+    border-color: rgba(0, 255, 122, 0.4);
+    color: var(--green);
+}
+
+.slot-toggle.is-full {
+    background: rgba(255, 48, 80, 0.08);
+    border-color: rgba(255, 48, 80, 0.4);
+    color: var(--red);
+}
+
+/* ==========================================================
+   MOBILE LAYOUT
+   Stacks sidebar above preview on narrow screens
+========================================================== */
+
+@media (max-width: 768px) {
+
+    #app {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    /* hide the drag divider — not useful on touch */
+    #divider {
+        display: none;
+    }
+
+    #sidebar {
+        width: 100% !important;
+        min-width: 0 !important;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        overflow-y: visible;
+        padding-bottom: 0;
+        flex-shrink: 0;
+    }
+
+    #preview {
+        flex: none;
+        width: 100%;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 30px 20px 60px;
+        overflow: visible;
+    }
+
+    #story {
+        /* scale the story card to fit the phone screen width */
+        width: calc(100vw - 40px);
+        height: auto;
+        aspect-ratio: 9 / 16;
+    }
+
+}
