@@ -1,0 +1,78 @@
+# Renders tomorrow's lasertag story to story.png on GitHub's servers (no computer needed).
+#
+# Save this file in the repo as:  .github/workflows/daily-story.yml
+# Needs in the repo: index.html, style.css, story.css, app.js, config.js, export.js,
+# renderer.js, state.js, ui.js, logo.png, background.png, slots.py, render_story.py
+# (either flat in the repo root, or in the original css/ js/ assets/ folders - both work)
+#
+# Schedule: Wed-Sat, 09:00 UTC = 12:00 Estonian summer time (11:00 in winter).
+# Wed-Sat only, because Sun-Tue nights have no lasertag slots for "tomorrow".
+# GitHub can start scheduled runs 5-30 minutes late, so run the phone Shortcut later.
+#
+# Manual run from phone: repo -> Actions -> "Daily story" -> Run workflow
+# (optionally type a date like 2026-09-25).
+
+name: Daily story
+
+on:
+  schedule:
+    - cron: "0 12 * * 3-6"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Target date YYYY-MM-DD (leave empty for tomorrow)"
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Playwright + Chromium
+        run: |
+          pip install playwright tzdata
+          python -m playwright install --with-deps chromium
+
+      - name: Arrange files (lets you upload everything flat from a phone)
+        run: |
+          mkdir -p css js assets
+          for f in style.css story.css; do
+            if [ -f "$f" ]; then mv "$f" css/; fi
+          done
+          for f in app.js config.js export.js renderer.js state.js ui.js; do
+            if [ -f "$f" ]; then mv "$f" js/; fi
+          done
+          for f in logo.png background.png; do
+            if [ -f "$f" ]; then mv "$f" assets/; fi
+          done
+
+      - name: Render story
+        id: render
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+        run: |
+          set +e
+          python render_story.py --live ${INPUT_DATE:+--date "$INPUT_DATE"} --out story.png
+          code=$?
+          if [ "$code" -eq 2 ]; then
+            echo "No lasertag slots that day - skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          exit "$code"
+
+      - name: Commit image
+        if: steps.render.outputs.skip != 'true'
+        run: |
+          git config user.name "story-bot"
+          git config user.email "story-bot@users.noreply.github.com"
+          git add story.png
+          git diff --staged --quiet || (git commit -m "Update story" && git push)
