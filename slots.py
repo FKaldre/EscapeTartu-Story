@@ -136,7 +136,7 @@ def as_text(result):
 
 
 def main():
-    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    args = [a for i, a in enumerate(sys.argv[1:]) if not a.startswith("--") and sys.argv[i] != "--days"]
     if not args:
         sys.exit(__doc__)
     url = args[0]
