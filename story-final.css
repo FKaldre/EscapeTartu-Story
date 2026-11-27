@@ -1,0 +1,624 @@
+/* Bundled fonts (no Google Fonts needed) */
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:600;font-display:block;src:url("../fonts/barlow-condensed-latin-600-normal.woff2") format("woff2");}
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:700;font-display:block;src:url("../fonts/barlow-condensed-latin-700-normal.woff2") format("woff2");}
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;font-display:block;src:url("../fonts/inter-latin-400-normal.woff2") format("woff2");}
+@font-face{font-family:"Inter";font-style:normal;font-weight:500;font-display:block;src:url("../fonts/inter-latin-500-normal.woff2") format("woff2");}
+@font-face{font-family:"Inter";font-style:normal;font-weight:600;font-display:block;src:url("../fonts/inter-latin-600-normal.woff2") format("woff2");}
+
+/* ==========================================================
+   STORY.CSS
+   Story Preview
+========================================================== */
+
+#preview{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+    overflow:auto;
+    background:#1d1d1d;
+}
+
+#story{
+
+    /* Theme colours - change these to re-colour the whole story */
+    --yellow:#F0E000;
+    --green:#00FF7A;
+    --red:#FF3050;
+    --orange:#FF9800;
+
+    position:relative;
+
+    width:405px;
+    height:720px;
+
+    aspect-ratio:9/16;
+
+    overflow:hidden;
+
+    border-radius:20px;
+
+    background-image: url('../assets/background.png');
+    background-size:cover;
+    background-position:center;
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.45);
+
+    display: flex;
+    flex-direction: column;
+
+}
+
+/* =======================
+   Dark overlay
+======================= */
+
+#overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+        linear-gradient(
+            rgba(0,0,0,.45),
+            rgba(0,0,0,.55)
+        );
+
+    pointer-events:none;
+
+}
+
+/* =======================
+   Header
+======================= */
+
+header{
+
+    position:relative;
+
+    z-index:2;
+
+    display:flex;
+    flex-direction:column;
+
+    padding:0px 34px;
+
+}
+
+#logo{
+
+    font-family:"Oswald";
+
+    color:var(--yellow);
+
+    font-size:18px;
+
+    letter-spacing:2px;
+
+    padding-top: 10px;
+
+}
+
+#title{
+
+    font-family:"Barlow Condensed";
+
+    font-size:58px;
+
+    font-weight:700;
+
+    color:white;
+
+    line-height:1;
+
+}
+
+#subtitle{
+
+    font-family:"Inter";
+
+    margin-top:4px;
+
+    font-size:16px;
+
+    letter-spacing:2px;
+
+    color:#d8d8d8;
+
+}
+
+/* =======================
+   Date
+======================= */
+
+#story-date{
+
+    position:relative;
+
+    z-index:2;
+
+    padding:0 34px;
+
+    margin-top:10px;
+
+}
+
+#story-day{
+
+    font-size:34px;
+
+    font-family:"Barlow Condensed";
+
+    color:white;
+
+    font-weight:700;
+
+}
+
+#story-date-value{
+
+    color:var(--yellow);
+
+    margin-top:2px;
+
+    font-size:18px;
+
+    font-family:"Inter";
+
+}
+
+/* =======================
+   Slots
+======================= */
+
+#slots{
+
+    position:relative;
+
+    z-index:2;
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:12px;
+
+    padding:12px 34px;
+
+}
+
+.slot{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:12px 14px;
+
+    border-radius:10px;
+
+    backdrop-filter:blur(5px);
+
+    background:rgba(0,0,0,.55);
+
+    border:2px solid #2f2f36;
+
+}
+
+.slot.free{
+
+    border-color:var(--green);
+
+}
+
+.slot.booked{
+
+    border-color:var(--red);
+
+    opacity:.65;
+
+}
+
+.slot-time{
+
+    font-family:"Barlow Condensed";
+
+    font-size:24px;
+
+    color:white;
+
+    font-weight:700;
+
+}
+
+.slot-status{
+
+    font-size:13px;
+
+    font-family:"Inter";
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+}
+
+.slot.free .slot-status{
+
+    color:var(--green);
+
+}
+
+.slot.booked .slot-status{
+
+    color:var(--red);
+
+}
+
+/* =======================
+   Weekend
+======================= */
+
+#weekend{
+
+    position:relative;
+
+    z-index:2;
+
+    margin:10px 34px 0;
+
+    padding:18px;
+
+    border-radius:14px;
+
+    background:rgba(15,15,15,.75);
+
+    border:2px solid rgba(255,152,0,.5);
+
+}
+
+#weekend h2{
+
+    margin:0 0 16px 0;
+
+    font-family:"Barlow Condensed";
+
+    color:var(--orange);
+
+    font-size:26px;
+
+    letter-spacing:2px;
+
+}
+
+.weekend-day{
+
+    margin-bottom:18px;
+
+}
+
+.weekend-day:last-child{
+
+    margin-bottom:0;
+
+}
+
+.weekend-title{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    color:white;
+
+    font-weight:600;
+
+    margin-bottom:8px;
+
+}
+
+.availability-bar{
+
+    width:100%;
+
+    height:8px;
+
+    border-radius:99px;
+
+    background:#303030;
+
+    overflow:hidden;
+
+}
+
+.availability-fill{
+
+    height:100%;
+
+    background:var(--orange);
+
+    border-radius:99px;
+
+}
+
+.availability-text{
+
+    margin-top:6px;
+
+    color:#d5d5d5;
+
+    font-size:13px;
+
+}
+
+/* =======================
+   Järgmine nädal
+   (weekend mode — matches #weekend styling exactly)
+======================= */
+
+#next-week {
+
+    position: relative;
+
+    z-index: 2;
+
+    margin: 10px 34px 0;
+
+    padding: 18px;
+
+    border-radius: 14px;
+
+    background: rgba(15,15,15,.75);
+
+    border: 2px solid rgba(255,152,0,.5);
+
+}
+
+#next-week h2 {
+
+    margin: 0 0 6px 0;
+
+    font-family: "Barlow Condensed";
+
+    color: var(--orange);
+
+    font-size: 26px;
+
+    letter-spacing: 2px;
+
+}
+
+/* =======================
+   Footer
+======================= */
+
+footer {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+footer div:first-child{
+
+    color:white;
+
+    font-family:"Barlow Condensed";
+
+    font-size:28px;
+
+}
+
+footer div:last-child{
+
+    color:var(--yellow);
+
+    font-family:"Inter";
+
+    margin-top:4px;
+
+    letter-spacing:2px;
+
+}
+
+
+/* =======================
+   Weekend level colours
+======================= */
+
+.weekend-day[data-level="low"]    .availability-fill { background: var(--green); }
+.weekend-day[data-level="medium"] .availability-fill { background: var(--orange); }
+.weekend-day[data-level="high"]   .availability-fill { background: var(--red); }
+
+.weekend-day[data-level="low"]    .weekend-level-label { color: var(--green); }
+.weekend-day[data-level="medium"] .weekend-level-label { color: var(--orange); }
+.weekend-day[data-level="high"]   .weekend-level-label { color: var(--red); }
+
+/* Slot status colours */
+.slot[data-status="limited"]  { border-color: var(--orange); }
+.slot[data-status="reserved"] { border-color: #888; opacity: 0.7; }
+.slot[data-status="limited"]  .slot-status { color: var(--orange); }
+.slot[data-status="reserved"] .slot-status { color: #aaa; }
+
+
+/* ==========================================================
+   ESCAPE ROOM THEME
+   Switched on by the class "theme-escape" on #story.
+   Re-uses the same header / footer, swaps the slots for
+   room cards and the date block for a sticker.
+========================================================== */
+
+#story.theme-escape{
+    --green:#3DFF8B;
+    --card-bg:#17130f;
+    --card-border:#3a2d1a;
+    --chip-off-border:#26221e;
+    --chip-off-text:#5f584e;
+
+    background-image:none;
+    background-color:#0d0b0a;
+}
+
+.theme-escape #overlay,
+.theme-escape #slots,
+.theme-escape #story-date{ display:none; }
+
+.theme-escape header{ padding:0 19px; }
+
+.theme-escape #logo{
+    align-self:flex-start;
+    height:26px;
+    width:auto;
+    padding-top:0;
+    margin:22px 0 0 -15px;   /* logo.png has empty space on its left */
+}
+
+.theme-escape #title{
+    font-size:40px;
+    letter-spacing:1px;
+    margin-top:8px;
+}
+
+.theme-escape #subtitle{ font-size:13px; }
+
+.theme-escape footer{ margin-top:auto; }
+
+/* ---------- Date sticker ---------- */
+
+#date-sticker{ display:none; }
+
+.theme-escape #date-sticker{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:absolute;
+    top:20px;
+    right:19px;
+    z-index:3;
+    width:92px;
+    height:92px;
+    border-radius:12px;
+    background:var(--yellow);
+    color:#0d0b0a;
+    transform:rotate(5deg);
+    line-height:1;
+}
+
+#sticker-day,
+#sticker-month{
+    font-family:"Inter";
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:2px;
+}
+
+#sticker-num{
+    font-family:"Barlow Condensed";
+    font-size:42px;
+    font-weight:700;
+    margin:2px 0;
+}
+
+/* ---------- Room cards ---------- */
+
+#rooms{ display:none; }
+
+.theme-escape #rooms{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    position:relative;
+    z-index:2;
+    margin:16px 19px 0;
+}
+
+.room-card{
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:14px;
+    padding:8px 10px;
+}
+
+.room-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    height:38px;
+}
+
+.room-thumb{
+    flex:none;
+    width:38px;
+    height:38px;
+    border-radius:9px;
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Barlow Condensed";
+    font-size:20px;
+    font-weight:700;
+    color:#fff;
+}
+
+/* placeholder colours, shown until a room has a photo */
+.room-1{ background-color:#4a3318; }
+.room-2{ background-color:#1b4a40; }
+.room-3{ background-color:#4a1f38; }
+.room-4{ background-color:#22335c; }
+.room-5{ background-color:#4a4a20; }
+
+.room-name{
+    flex:1;
+    min-width:0;
+    font-family:"Barlow Condensed";
+    font-size:26px;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:#fff;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* ---------- Time chips ---------- */
+
+.room-times{
+    display:grid;
+    grid-template-columns:repeat(var(--cols, 7), 1fr);
+    gap:5px;
+    margin-top:7px;
+}
+
+.time-chip{
+    box-sizing:border-box;
+    text-align:center;
+    padding:3px 0;
+    border-radius:7px;
+    font-family:"Barlow Condensed";
+    font-size:18px;
+    font-weight:600;
+    line-height:1.1;
+}
+
+.time-chip.free{
+    border:1px solid var(--green);
+    color:#e8ffef;
+}
+
+.time-chip.booked{
+    border:1px solid var(--chip-off-border);
+    color:var(--chip-off-text);
+    text-decoration:line-through;
+}
