@@ -97,18 +97,33 @@ jobs:
         run: |
           git config user.name "story-bot"
           git config user.email "story-bot@users.noreply.github.com"
+
+          # The "Arrange files" step moved files around in this checkout, which would
+          # block git pull. Keep only the rendered images, reset the checkout to the
+          # latest main, and put the images back on top of it.
+          mkdir -p "$RUNNER_TEMP/out"
           for f in story.png story-escape.png; do
-            if [ -f "$f" ]; then git add "$f"; fi
+            if [ -f "$f" ]; then cp "$f" "$RUNNER_TEMP/out/"; fi
           done
-          if git diff --staged --quiet; then
-            echo "Images unchanged - nothing to commit."
+          if ! ls "$RUNNER_TEMP"/out/*.png >/dev/null 2>&1; then
+            echo "No images were rendered - nothing to commit."
             exit 0
           fi
-          git commit -m "Update stories"
-          # If someone pushed to main while this job was running, rebase on top of it
-          # (keeping our freshly rendered images) and retry the push.
+
           for i in 1 2 3; do
-            git pull --rebase -X theirs origin main && git push && exit 0
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
+            cp "$RUNNER_TEMP"/out/*.png .
+            for f in story.png story-escape.png; do
+              if [ -f "$f" ]; then git add "$f"; fi
+            done
+            if git diff --staged --quiet; then
+              echo "Images unchanged - nothing to commit."
+              exit 0
+            fi
+            git commit -m "Update stories"
+            git push && exit 0
             echo "Push attempt $i failed - retrying..."
             sleep 5
           done
