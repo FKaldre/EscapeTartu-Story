@@ -1,0 +1,136 @@
+# Renders tomorrow's lasertag story (story.png) and escape room story (story-escape.png)
+# on GitHub's servers (no computer needed).
+#
+# Save this file in the repo as:  .github/workflows/daily-story.yml
+# Needs in the repo: index.html, style.css, story.css, app.js, config.js, export.js,
+# renderer.js, state.js, ui.js, logo.png, background.png, slots.py, render_story.py
+# Optional room photos: assets/rooms/<room-name>.jpg (dracula.jpg, vangla.jpg, ...)
+# (either flat in the repo root, or in the original css/ js/ assets/ folders - both work)
+#
+# Schedule: every day, twice, at "off-peak" minutes. GitHub delays scheduled runs that start
+# exactly on the hour (sometimes by hours), so these use odd minutes on purpose:
+#   06:23 UTC = 08:23 Estonian time in winter (09:23 in summer)
+#   08:47 UTC = 10:47 Estonian time in winter (11:47 in summer)
+# The second run picks up bookings made since the first and only commits if the image changed.
+# Runs every day because the escape rooms are open every day; on days with no lasertag slots
+# (Sun-Tue nights) the lasertag step skips itself and only the escape room story is updated.
+# GitHub can still start scheduled runs 5-30 minutes late, so run the phone Shortcut later.
+#
+# Manual run from phone: repo -> Actions -> "Daily story" -> Run workflow
+# (optionally type a date like 2026-09-25).
+
+name: Daily story
+
+on:
+  schedule:
+    - cron: "23 6 * * *"
+    - cron: "47 8 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Target date YYYY-MM-DD (leave empty for tomorrow)"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-story
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Playwright + Chromium
+        run: |
+          pip install playwright tzdata
+          python -m playwright install --with-deps chromium
+
+      - name: Arrange files (lets you upload everything flat from a phone)
+        run: |
+          mkdir -p css js assets
+          for f in style.css story.css; do
+            if [ -f "$f" ]; then mv "$f" css/; fi
+          done
+          for f in app.js config.js export.js renderer.js state.js ui.js; do
+            if [ -f "$f" ]; then mv "$f" js/; fi
+          done
+          for f in logo.png background.png; do
+            if [ -f "$f" ]; then mv "$f" assets/; fi
+          done
+
+      - name: Render lasertag story
+        id: laser
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+        run: |
+          set +e
+          python render_story.py --live ${INPUT_DATE:+--date "$INPUT_DATE"} --out story.png
+          code=$?
+          if [ "$code" -eq 2 ]; then
+            echo "No lasertag slots that day - skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          exit "$code"
+
+      # The escape room story is new: if it fails, the lasertag story is still committed.
+      - name: Render escape room story
+        id: escape
+        continue-on-error: true
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+        run: |
+          set +e
+          python render_story.py --type escape --live ${INPUT_DATE:+--date "$INPUT_DATE"} --out story-escape.png
+          code=$?
+          if [ "$code" -eq 2 ]; then
+            echo "No escape room slots that day - skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          exit "$code"
+
+      - name: Commit images
+        if: steps.laser.outputs.skip != 'true' || steps.escape.outputs.skip != 'true'
+        run: |
+          git config user.name "story-bot"
+          git config user.email "story-bot@users.noreply.github.com"
+
+          # The "Arrange files" step moved files around in this checkout, which would
+          # block git pull. Keep only the rendered images, reset the checkout to the
+          # latest main, and put the images back on top of it.
+          mkdir -p "$RUNNER_TEMP/out"
+          for f in story.png story-escape.png; do
+            if [ -f "$f" ]; then cp "$f" "$RUNNER_TEMP/out/"; fi
+          done
+          if ! ls "$RUNNER_TEMP"/out/*.png >/dev/null 2>&1; then
+            echo "No images were rendered - nothing to commit."
+            exit 0
+          fi
+
+          for i in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
+            cp "$RUNNER_TEMP"/out/*.png .
+            for f in story.png story-escape.png; do
+              if [ -f "$f" ]; then git add "$f"; fi
+            done
+            if git diff --staged --quiet; then
+              echo "Images unchanged - nothing to commit."
+              exit 0
+            fi
+            git commit -m "Update stories"
+            git push && exit 0
+            echo "Push attempt $i failed - retrying..."
+            sleep 5
+          done
+          exit 1
